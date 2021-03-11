@@ -25,19 +25,19 @@ def home():
 
 
 socketio = SocketIO(app, cors_allowed_origins='*')
-@socketio.on("update")
-def give_info(msg):
-    print("update: " + str(msg))
-    send(msg, broadcast = True)
 
-@socketio.on("init")
+# @socketio.on("disconnect")
+# def pop_person
+
+@socketio.on("message")
 def initialize(stats):
     global players    
     cur_cor = potential_coordinates[len(players)]
     players.append(character(cur_cor[0],cur_cor[1],5))
 
     print("Sending " + str({"x":cur_cor[0], "y": cur_cor[1], "r":5}))
-    send({"x":cur_cor[0], "y": cur_cor[1], "r":5}, broadcast = False) #tell the person what their coordinates are
+    send(str({"id":len(players),"x":cur_cor[0], "y": cur_cor[1], "r":5}),broadcast=True) #tell the person what their coordinates are
+    print("sent")
 
 if __name__ == "__main__":
     socketio.run(app)

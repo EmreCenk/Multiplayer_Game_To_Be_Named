@@ -7,16 +7,25 @@
 $(document).ready(function(){
     var socket = io.connect("http://127.0.0.1:5000/");
     socket.on("connect",function(){
-        socket.emit("init", {});
+        socket.emit("message", {});
         
     });
 
-    socket.on("init", function(sent){
-        console.log(String(sent), typeof(sent));
-        
+    socket.on('message', function(msg) {
+		$("body").append('<li>'+msg+'</li>');
+        msg=JSON.parse(msg);
+		console.log(msg, typeof(msg));
+        const identification = msg["id"]
+	});
 
-    }
-    );
+    // socket.on("init", function(sent){
+    //     console.log("is this happening");
+    //     console.log(String(sent), typeof(sent));
+    //     const identification = sent;
+
+
+    // }
+    // );
 
     // socket.on("update", update_players)
 })
@@ -84,6 +93,9 @@ var other_players = []
 
 window.addEventListener("keydown",key_pressed);
 window.addEventListener("keyup",key_up);
+window.onbeforeunload = function () {
+    socket.emit('disconnecting', {'username':identification});
+}
 
 function modify(cur_key, what_to=true){
 
