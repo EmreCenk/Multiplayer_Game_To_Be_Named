@@ -1,0 +1,19 @@
+{
+  "name": "ball_game",
+  "version": "1.0.0",
+  "description": "Multiplayer game",
+  "main": "game_back_end.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/EmreCenk/Multiplayer_Game_To_Be_Named.git"
+  },
+  "author": "Emre Cenk",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/EmreCenk/Multiplayer_Game_To_Be_Named/issues"
+  },
+  "homepage": "https://github.com/EmreCenk/Multiplayer_Game_To_Be_Named#readme"
+}
