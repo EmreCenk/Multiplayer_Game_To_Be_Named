@@ -10,15 +10,29 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
     <link rel="stylesheet" href="style.css">
-    
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://cdn.socket.io/3.1.1/socket.io.min.js" integrity="sha384-gDaozqUvc4HTgo8iZjwth73C6dDDeOJsAgpxBcMpZYztUfjHXpzrpdrHRdVp8ySO" crossorigin="anonymous"></script>
+
 
 </head>
 <body>
     <canvas id = "main_canvas_object"></canvas>
+    <input onsubmit="">
+    <script>
+        $(document).ready(function(){
+            var socket = io.connect("http://127.0.0.1:5000/");
+            socket.on("connect",function(){
+                socket.send("User has connected.");
+            });
 
-    <script src="https://cdn.socket.io/3.1.1/socket.io.min.js" integrity="sha384-gDaozqUvc4HTgo8iZjwth73C6dDDeOJsAgpxBcMpZYztUfjHXpzrpdrHRdVp8ySO" crossorigin="anonymous"></script>
+            socket.on("message", function(msg){
+                $("body").append("<li>" + msg);
+            })
+        })
 
-    <script src="game_front_end.js"></script>
+        
+    </script>
+    <!-- <script src="game_front_end.js"></script> -->
 
 </body>
 </html>
