@@ -12,7 +12,7 @@ $(document).ready(function(){
     });
 
     socket.on("init", function(sent){
-        console.log(sent, typeof(sent));
+        console.log(String(sent), typeof(sent));
         
 
     }
