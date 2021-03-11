@@ -6,7 +6,12 @@ from flask import Flask, render_template
 from flask_socketio import SocketIO, send
 from character_class import character
 
-
+potential_coordinates = [
+    [0,0],
+    [1920/2,0],
+    [0,1080/2],
+    [1920/2,1080/2]
+]
 players=[]
 app = Flask(__name__)
 app.config['SECRET_KEY'] = "I will eventually set a secret key"
@@ -27,9 +32,12 @@ def give_info(msg):
 
 @socketio.on("init")
 def initialize(stats):
-    global players
-    stats=eval(stats)
-    players.append(character(1,1,1))
+    global players    
+    cur_cor = potential_coordinates[len(players)]
+    players.append(character(cur_cor[0],cur_cor[1],5))
+
+    print("Sending " + str({"x":cur_cor[0], "y": cur_cor[1], "r":5}))
+    send({"x":cur_cor[0], "y": cur_cor[1], "r":5}, broadcast = False) #tell the person what their coordinates are
 
 if __name__ == "__main__":
     socketio.run(app)

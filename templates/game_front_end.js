@@ -11,6 +11,13 @@ $(document).ready(function(){
         
     });
 
+    socket.on("init", function(sent){
+        console.log(sent, typeof(sent));
+        
+
+    }
+    );
+
     // socket.on("update", update_players)
 })
 
@@ -70,7 +77,8 @@ class character{
     }
 }
 // $("body").append("<li>" + msg);
-var main_ch = new character(0,0,5,5,5);
+
+
 var other_players = []
 
 
@@ -109,6 +117,7 @@ function key_up(event){
 
 
 
+var main_ch = new character(0,0,5,5,5);
 
 function animate(){
     //animate
