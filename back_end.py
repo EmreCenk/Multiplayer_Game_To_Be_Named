@@ -34,13 +34,14 @@ socketio = SocketIO(app, cors_allowed_origins="*")
 @socketio.on("json")
 def pop_person(json_thing):
 
-    socketio.emit("update", json_thing) #Broadcasting update
+    socketio.emit("update", json_thing, broadcast=True) #Broadcasting update
+    print("update",json_thing)
 
 @socketio.on("message")
 def initialize(stats):
     global players    
     cur_cor = potential_coordinates[len(players)] #get one of the corners
-    players.append(character(cur_cor[0],cur_cor[1],constant_radius,len(players)-1))
+    players.append(character(cur_cor[0],cur_cor[1],constant_radius,len(players)))
 
     print(players,len(players))
 
@@ -51,14 +52,15 @@ def initialize(stats):
 
     send(ptosend,broadcast=False)
 
-    socketio.emit("new player", ptosend)
+    socketio.emit("new player", tosend, broadcast = True)
     
 
 
 def json_to_players():
     final={}
     for p in players:
-        final[p.id] = {"id":p.id,"x":p.x, "y": p.y, "r":p.radius, "vx": constant_vx, "vy":constant_vy}
+        if p.id!=len(players)-1:
+            final[p.id] = {"id":p.id,"x":p.x, "y": p.y, "r":p.radius, "vx": constant_vx, "vy":constant_vy}
 
     return final    
 def update_player(id,newx,newy):

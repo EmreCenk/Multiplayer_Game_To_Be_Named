@@ -16,14 +16,20 @@ $(document).ready(function(){
 
     socket.on("update", function(something){
         update_player(something);
-    })
+    });
+
+    socket.on("new player", function(something){
+        console.log(something,"new player");
+        if (something["id"]!==my_id){
+            add_player(something);
+        }
+    });
 
 
 })
 
 
 function add_player(info){
-    console.log("info ", info);
 
     
     let c_x = info["x"];
@@ -40,9 +46,22 @@ function add_player(info){
 
 
 function update_player(json_input){
+    
     let curid = json_input["id"];
+    if (curid === my_id){return null};
     let new_x = json_input["x"];
     let new_y = json_input["y"];
+
+    for (var person in other_players){
+        
+        if ( other_players[person].identification === curid){
+            other_players[person].x = new_x;
+            other_players[person].y = new_y;
+
+            break;
+        }
+    }
+
 
 }
 function init_char(msg){
@@ -192,7 +211,6 @@ function animate(){
     requestAnimationFrame(animate);
 
     for (cur_ch of other_players){
-        console.log(cur_ch);
 
         cur_ch.draw();
 
