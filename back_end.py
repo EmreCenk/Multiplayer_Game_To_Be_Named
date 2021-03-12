@@ -32,7 +32,7 @@ def home():
 socketio = SocketIO(app, cors_allowed_origins="*")
 
 @socketio.on("json")
-def pop_person(json_thing):
+def broadcast_update(json_thing):
 
     socketio.emit("update", json_thing, broadcast=True) #Broadcasting update
     print("update",json_thing)
