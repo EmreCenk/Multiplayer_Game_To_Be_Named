@@ -1,9 +1,9 @@
 
 
+var socket = io.connect("http://127.0.0.1:5000/");
 
 // ESTABLISHING SOCKET CONNECTION:
 $(document).ready(function(){
-    var socket = io.connect("http://127.0.0.1:5000/");
     socket.on("connect",function(){
         socket.emit("message", {});
         
@@ -13,6 +13,11 @@ $(document).ready(function(){
         init_char(msg);
    
 	});
+
+    socket.on("update", function(something){
+        console.log(something);
+        console.log(typeof(something));
+    })
 
     // socket.on("init", function(sent){
     //     console.log("is this happening");
@@ -35,10 +40,10 @@ function init_char(msg){
     let vx = msg["vx"];
     let vy = msg["vy"];
 
-    window.main_ch = new character(c_x,c_y,c_r,vx,vy,identification);
+    main_ch = new character(c_x,c_y,c_r,vx,vy,identification);
     
     
-    console.log("character init ", window.main_ch);
+    console.log("character init ", main_ch);
 }
 //CONTROLS AND ALTERNATIVES
 const move_left = ['ArrowLeft','a']; // the 'a' and left arrow
@@ -71,21 +76,28 @@ class character{
     }
 
     move(array_of_current_moves){
+        let didwe = false;
         if (array_of_current_moves[0]){
             this.x-=this.vx;
+            didwe=true;
         }
         
         if (array_of_current_moves[1]){
             this.x+=this.vx;
+            didwe=true;
         }
         
         if (array_of_current_moves[2]){
             this.y-=this.vy;
+            didwe=true;
         }
         
         if (array_of_current_moves[3]){
             this.y+=this.vy;
+            didwe=true;
         }
+
+        return didwe
 
     }
     draw(){
@@ -101,12 +113,25 @@ class character{
 
 var other_players = []
 
+// window.onbeforeunload = function (e) {
+//     e = e || window.event;
+
+
+//     console.log("YAS");
+
+//     socket.emit('message', {username:identification});
+    
+
+//     return 'Sure?';
+// };
 
 window.addEventListener("keydown",key_pressed);
 window.addEventListener("keyup",key_up);
-window.onbeforeunload = function () {
-    socket.emit('leaving', {username:identification});
-}
+window.addEventListener("beforeunload", function (){
+    console.log("YAS");
+
+    socket.emit('message', {username:identification}
+    )})
 
 function modify(cur_key, what_to=true){
 
@@ -148,8 +173,12 @@ function animate(){
 
     //animate character:
     requestAnimationFrame(animate);
-    window.main_ch.draw();
-    window.main_ch.move(moving);
+    main_ch.draw();
+    let move_here = main_ch.move(moving);
+    if (move_here){
+        socket.emit("json", {id:main_ch.identification, x:main_ch.x, y:main_ch.y});
+
+    }
 }
 
 animate();
