@@ -1,8 +1,6 @@
 
 
 
-
-
 // ESTABLISHING SOCKET CONNECTION:
 $(document).ready(function(){
     var socket = io.connect("http://127.0.0.1:5000/");
@@ -12,10 +10,8 @@ $(document).ready(function(){
     });
 
     socket.on('message', function(msg) {
-		$("body").append('<li>'+msg+'</li>');
-        msg=JSON.parse(msg);
-		console.log(msg, typeof(msg));
-        const identification = msg["id"]
+        init_char(msg);
+   
 	});
 
     // socket.on("init", function(sent){
@@ -30,6 +26,20 @@ $(document).ready(function(){
     // socket.on("update", update_players)
 })
 
+function init_char(msg){
+    console.log(msg, typeof(msg));
+    const identification = msg["id"];
+    let c_x = msg["x"];
+    let c_y = msg["y"];
+    let c_r = msg["r"];
+    let vx = msg["vx"];
+    let vy = msg["vy"];
+
+    window.main_ch = new character(c_x,c_y,c_r,vx,vy,identification);
+    
+    
+    console.log("character init ", window.main_ch);
+}
 //CONTROLS AND ALTERNATIVES
 const move_left = ['ArrowLeft','a']; // the 'a' and left arrow
 const move_right = ['ArrowRight','d']; // 'd' and right arrow
@@ -49,7 +59,7 @@ canvas.height = window.innerHeight;
 
 
 class character{
-    constructor(x,y,radius, vx, vy, color="black"){
+    constructor(x,y,radius, vx, vy, identification, color="black"){
         this.x=x;
         this.y=y;
         this.radius = radius;
@@ -57,6 +67,7 @@ class character{
         this.vy = vy;
         this.color=color;
         this.show=true;
+        this.identification=identification;
     }
 
     move(array_of_current_moves){
@@ -94,7 +105,7 @@ var other_players = []
 window.addEventListener("keydown",key_pressed);
 window.addEventListener("keyup",key_up);
 window.onbeforeunload = function () {
-    socket.emit('disconnecting', {'username':identification});
+    socket.emit('leaving', {username:identification});
 }
 
 function modify(cur_key, what_to=true){
@@ -129,7 +140,6 @@ function key_up(event){
 
 
 
-var main_ch = new character(0,0,5,5,5);
 
 function animate(){
     //animate
@@ -138,8 +148,8 @@ function animate(){
 
     //animate character:
     requestAnimationFrame(animate);
-    main_ch.draw();
-    main_ch.move(moving);
+    window.main_ch.draw();
+    window.main_ch.move(moving);
 }
 
 animate();
