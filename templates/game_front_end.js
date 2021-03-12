@@ -1,5 +1,5 @@
 
-
+var my_id;
 var socket = io.connect("http://127.0.0.1:5000/");
 
 // ESTABLISHING SOCKET CONNECTION:
@@ -15,35 +15,52 @@ $(document).ready(function(){
 	});
 
     socket.on("update", function(something){
-        console.log(something);
-        console.log(typeof(something));
+        update_player(something);
     })
 
-    // socket.on("init", function(sent){
-    //     console.log("is this happening");
-    //     console.log(String(sent), typeof(sent));
-    //     const identification = sent;
 
-
-    // }
-    // );
-
-    // socket.on("update", update_players)
 })
 
+
+function add_player(info){
+    console.log("info ", info);
+
+    
+    let c_x = info["x"];
+    let c_y = info["y"];
+    let c_r = info["r"];
+    let vx = info["vx"];
+    let vy = info["vy"];
+    let cur_id = info["id"];
+    let some_ch = new character(c_x,c_y,c_r,vx,vy,cur_id);
+    other_players.push(some_ch);
+    console.log(other_players);
+    console.log(other_players.length);
+}
+
+
+function update_player(json_input){
+    let curid = json_input["id"];
+    let new_x = json_input["x"];
+    let new_y = json_input["y"];
+
+}
 function init_char(msg){
     console.log(msg, typeof(msg));
-    const identification = msg["id"];
-    let c_x = msg["x"];
-    let c_y = msg["y"];
-    let c_r = msg["r"];
-    let vx = msg["vx"];
-    let vy = msg["vy"];
+    for (var person in msg){
+        person = msg[person];
+        if (person.hasOwnProperty('my_id')){
+            my_id = person["my_id"];
+            console.log("id is finally here!", my_id);
 
-    main_ch = new character(c_x,c_y,c_r,vx,vy,identification);
+        }
+        add_player(person);
+
+
+    }
     
     
-    console.log("character init ", main_ch);
+    console.log("character init ");
 }
 //CONTROLS AND ALTERNATIVES
 const move_left = ['ArrowLeft','a']; // the 'a' and left arrow
@@ -130,7 +147,7 @@ window.addEventListener("keyup",key_up);
 window.addEventListener("beforeunload", function (){
     console.log("YAS");
 
-    socket.emit('message', {username:identification}
+    socket.emit('message', {username:my_id}
     )})
 
 function modify(cur_key, what_to=true){
@@ -171,14 +188,23 @@ function animate(){
     //animate info received from server
     c.clearRect(0,0,window.innerWidth,window.innerHeight);
 
-    //animate character:
+    //animate and update your own character::
     requestAnimationFrame(animate);
-    main_ch.draw();
-    let move_here = main_ch.move(moving);
-    if (move_here){
-        socket.emit("json", {id:main_ch.identification, x:main_ch.x, y:main_ch.y});
 
+    for (cur_ch of other_players){
+        console.log(cur_ch);
+
+        cur_ch.draw();
+
+        if (cur_ch.identification === my_id){
+            let move_here = cur_ch.move(moving);
+            if (move_here){
+                socket.emit("json", {id:cur_ch.identification, x:cur_ch.x, y:cur_ch.y});
+
+            }
+        }
     }
+    //animate other characters:
 }
 
 animate();
