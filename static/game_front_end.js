@@ -20,9 +20,9 @@ $(document).ready(function(){
     });
 
     socket.on("new player", function(something){
-        //a new player has joined the game, add him to the server
+        //a new  p
         console.log(something,"new player");
-        if (something["id"]!==my_id){
+        if (something["id"]!==my_id){ //to make sure you don't add yourself twice
             add_player(something);
         }
     });
@@ -50,7 +50,7 @@ function add_player(info){
 function update_player(json_input){
     
     let curid = json_input["id"];
-    if (curid === my_id){return null};
+    // if (curid === my_id){return null};
     let new_x = json_input["x"];
     let new_y = json_input["y"];
 
@@ -116,28 +116,30 @@ class character{
     move(array_of_current_moves){
         let didx = false;
         let didy = false;
+        let newx = this.x;
+        let newy = this.y;
 
         if (array_of_current_moves[0]){
-            this.x-=this.vx;
+            newx-=this.vx;
             didx = !didx;
         }
         
         if (array_of_current_moves[1]){
-            this.x+=this.vx;
+            newx+=this.vx;
             didx = !didx;
         }
         
         if (array_of_current_moves[2]){
-            this.y-=this.vy;
+            newy-=this.vy;
             didy = !didy;
         }
         
         if (array_of_current_moves[3]){
-            this.y+=this.vy;
+            newy+=this.vy;
             didy = !didy;
         }
 
-        return didy || didx 
+        return [didy || didx , newx, newy];
 
     }
     draw(){
@@ -220,10 +222,14 @@ function animate(){
 
         if (cur_ch.identification === my_id){
             //check if you are moving
-            let move_here = cur_ch.move(moving);
+            let original = cur_ch.move(moving);
+            let move_here = original[0];
+            let newx = original[1]; 
+            let newy = original[2];
+            console.log(move_here,newx,newy);
             if (move_here){
-                socket.emit("json", {id:cur_ch.identification, x:cur_ch.x, y:cur_ch.y});
-
+                // you have moved
+                socket.emit("json", {id:cur_ch.identification, x:newx, y:newy});
             }
         }
     }

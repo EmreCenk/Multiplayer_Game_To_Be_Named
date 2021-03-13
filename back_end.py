@@ -1,7 +1,5 @@
 
 
-
-
 from flask import Flask, render_template
 from flask_socketio import SocketIO, send
 from character_class import character
@@ -31,7 +29,7 @@ def home():
 
 socketio = SocketIO(app, cors_allowed_origins="*")
 
-@socketio.on("json")
+@socketio.on(   son")
 def broadcast_update(json_thing):
     global players
     #json_thing is in the following format: {'id': 0, 'x': 155, 'y': 145}
