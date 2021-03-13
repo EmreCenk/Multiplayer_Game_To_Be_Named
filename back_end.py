@@ -21,7 +21,7 @@ players=[]
 app = Flask(__name__)
 app.config["SECRET_KEY"] = "I will eventually set a secret key"
 
-
+other_names = {"update":"n"}
 
 
 @app.route("/")
@@ -33,12 +33,18 @@ socketio = SocketIO(app, cors_allowed_origins="*")
 
 @socketio.on("json")
 def broadcast_update(json_thing):
+    global players
+    #json_thing is in the following format: {'id': 0, 'x': 155, 'y': 145}
+    socketio.emit(other_names["update"], json_thing, broadcast=True) #Broadcasting update
 
-    socketio.emit("update", json_thing, broadcast=True) #Broadcasting update
-    print("update",json_thing)
+    #updating player stats accordingly:
+    players[json_thing["id"]].x = json_thing["x"]
+    players[json_thing["id"]].y = json_thing["y"]
+     
 
 @socketio.on("message")
 def initialize(stats):
+    #initialize player
     global players    
     cur_cor = potential_coordinates[len(players)] #get one of the corners
     players.append(character(cur_cor[0],cur_cor[1],constant_radius,len(players)))
@@ -52,6 +58,8 @@ def initialize(stats):
 
     send(ptosend,broadcast=False)
 
+
+    #tell everyone that a new player has joined:
     socketio.emit("new player", tosend, broadcast = True)
     
 

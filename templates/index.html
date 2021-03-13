@@ -9,7 +9,9 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
-    <link rel="stylesheet" href="style.css">
+    <!-- <link rel="stylesheet" href="style.css"> -->
+    <link href="{{ url_for('static', filename='stylesheets/style.css') }}" />
+    <!-- <link type = "stylesheet" href = "style.css"> -->
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <script src="https://cdn.socket.io/3.1.1/socket.io.min.js" integrity="sha384-gDaozqUvc4HTgo8iZjwth73C6dDDeOJsAgpxBcMpZYztUfjHXpzrpdrHRdVp8ySO" crossorigin="anonymous"></script>
 
@@ -18,7 +20,7 @@
 <body>
     <canvas id = "main_canvas_object"></canvas>
 
-    <script src = "game_front_end.js"></script>
+    <script src="{{url_for('static', filename='game_front_end.js')}}"></script>
     <!-- <script src="game_front_end.js"></script> -->
 
 </body>
