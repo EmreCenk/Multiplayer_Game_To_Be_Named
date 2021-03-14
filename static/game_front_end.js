@@ -1,4 +1,6 @@
 
+
+//THE 'character' and 'bullet' CLASSES ARE IMPORTED FROM 'game_classes.js' IN THE HTML FILE
 var my_id;
 var socket = io.connect("http://127.0.0.1:5000/");
 
@@ -101,55 +103,7 @@ canvas.width = window.innerWidth;
 canvas.height = window.innerHeight;
 
 
-class character{
-    constructor(x,y,radius, vx, vy, identification, color="black"){
-        this.x=x;
-        this.y=y;
-        this.radius = radius;
-        this.vx=vx;
-        this.vy = vy;
-        this.color=color;
-        this.show=true;
-        this.identification=identification;
-    }
 
-    move(array_of_current_moves){
-        let didx = false;
-        let didy = false;
-        let newx = this.x;
-        let newy = this.y;
-
-        if (array_of_current_moves[0]){
-            newx-=this.vx;
-            didx = !didx;
-        }
-        
-        if (array_of_current_moves[1]){
-            newx+=this.vx;
-            didx = !didx;
-        }
-        
-        if (array_of_current_moves[2]){
-            newy-=this.vy;
-            didy = !didy;
-        }
-        
-        if (array_of_current_moves[3]){
-            newy+=this.vy;
-            didy = !didy;
-        }
-
-        return [didy || didx , newx, newy];
-
-    }
-    draw(){
-        c.beginPath();
-        c.arc(this.x,this.y,this.radius,0,Math.PI*2);
-        c.fillStyle = this.color;
-        c.fill();
-
-    }
-}
 // $("body").append("<li>" + msg);
 
 
@@ -226,7 +180,7 @@ function animate(){
             let move_here = original[0];
             let newx = original[1]; 
             let newy = original[2];
-            console.log(move_here,newx,newy);
+
             if (move_here){
                 // you have moved
                 socket.emit("json", {id:cur_ch.identification, x:newx, y:newy});

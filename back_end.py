@@ -29,7 +29,7 @@ def home():
 
 socketio = SocketIO(app, cors_allowed_origins="*")
 
-@socketio.on(   son")
+@socketio.on("json")
 def broadcast_update(json_thing):
     global players
     #json_thing is in the following format: {'id': 0, 'x': 155, 'y': 145}
@@ -44,7 +44,7 @@ def broadcast_update(json_thing):
 def initialize(stats):
     #initialize player
     global players    
-    cur_cor = potential_coordinates[len(players)] #get one of the corners
+    cur_cor = potential_coordinates[0] #get one of the corners
     players.append(character(cur_cor[0],cur_cor[1],constant_radius,len(players)))
 
     print(players,len(players))
