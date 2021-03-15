@@ -96,11 +96,6 @@ var moving = [false,false,false,false]; // index 0: left ,1:right , 2:up, 3:down
 window.innerWidth = 1920/2;
 window.innerHeight = 1080/2;
 
-var canvas = document.querySelector("canvas"); //selecting the canvas from the html
-var c = canvas.getContext("2d");
-//Making canvas full screen:
-canvas.width = window.innerWidth;
-canvas.height = window.innerHeight;
 
 
 
