@@ -32,7 +32,7 @@ def cartesian_to_polar(x,y,tuple_new_origin=(0,0)):
     r=sqrt((w**2)+(h**2)) # from the pythagorean theorem
     theta=atan2(h,w)
 
-    return r,degrees(theta)
+    return [r,degrees(theta)]
 
 
 class bullet:

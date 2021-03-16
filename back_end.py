@@ -50,9 +50,9 @@ def broadcast_player_position(json_thing):
 
 
 def broadcast_new_bullet(bullet_json):
-    print(current_milli_time)
+    print(current_milli_time())
     time.sleep(1)
-    print(bullet_json)
+    print(bullet_json())
     print()
     socketio.emit("b", bullet_json, broadcast=True) #Broadcasting new bullet
 
