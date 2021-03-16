@@ -3,7 +3,8 @@
 //THE 'character' and 'bullet' CLASSES ARE IMPORTED FROM 'game_classes.js' IN THE HTML FILE
 var my_id;
 var main_ch;
-var socket = io.connect("http://127.0.0.1:5000/");
+//"http://127.0.0.1:5000/" -> used to be arguement for io();
+var socket = io.connect();
 
 // ESTABLISHING SOCKET CONNECTION:
 $(document).ready(function(){
