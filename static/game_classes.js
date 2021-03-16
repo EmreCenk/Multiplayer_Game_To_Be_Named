@@ -2,8 +2,7 @@
 var canvas = document.querySelector("canvas"); //selecting the canvas from the html
 var c = canvas.getContext("2d");
 //Making canvas full screen:
-canvas.width = window.innerWidth;
-canvas.height = window.innerHeight;
+
 
 
 

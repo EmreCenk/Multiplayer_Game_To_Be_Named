@@ -90,40 +90,33 @@ const move_left = ['ArrowLeft','a']; // the 'a' and left arrow
 const move_right = ['ArrowRight','d']; // 'd' and right arrow
 const move_up = ['ArrowUp','w']; // 'w' and up arrow
 const move_down = ['ArrowDown','s']; //'s' and down arrow
+const shoot_buttons = ["x","X",]; // 'x' key to shoot bullets
 
 var moving = [false,false,false,false]; // index 0: left ,1:right , 2:up, 3:down
 
-window.innerWidth = 1920/2;
-window.innerHeight = 1080/2;
+window.innerWidth = 1920/4;
+window.innerHeight = 1080/4;
 
-
-
-
-// $("body").append("<li>" + msg);
-
+canvas.width = window.innerWidth;
+canvas.height = window.innerHeight;
 
 var other_players = []
 
-// window.onbeforeunload = function (e) {
-//     e = e || window.event;
-
-
-//     console.log("YAS");
-
-//     socket.emit('message', {username:identification});
-    
-
-//     return 'Sure?';
-// };
 
 window.addEventListener("keydown",key_pressed);
 window.addEventListener("keyup",key_up);
+canvas.onclick = shoot_bullet;
 // window.addEventListener("beforeunload", function (){
 //     console.log("YAS");
 
 //     socket.emit('message', {username:my_id}
 //     )})
 
+function shoot_bullet(event){
+    var x = event.pageX - $('#main_canvas_object').offset().left;
+    var y = event.pageY - $('#main_canvas_object').offset().top;
+    console.log(x,y)
+}
 function modify(cur_key, what_to=true){
 
     
