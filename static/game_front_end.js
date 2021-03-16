@@ -42,12 +42,30 @@ $(document).ready(function(){
 })
 
 function add_bullet(bullet_object){
+    let id = bullet_object["id"]; 
+    if (id === my_id){
+        //it was my bullet
+        return null
+
+    }
+
     let c_x = bullet_object["x"];
     let c_y = bullet_object["y"];
     let ox = bullet_object["ox"]; //origin x
     let oy = bullet_object["oy"]; //origin y
-    let id = bullet_object["id"]; 
+    let req_time = bullet_object["t"]; //when the request was first made
+
+    let date_object = new Date();
+    let cycles = (date_object.getTime()-req_time)*frame_rate/1000; 
+    cycles = Math.floor(cycles); //round to lower integer.
     let cur_bul = new bullet(c_x,c_y, ox, oy,id);
+
+    console.log(date_object.getTime(), req_time, cycles);
+    for (i=0; i<cycles; i++){
+        cur_bul.move();
+    }
+    console.log(cur_bul);
+
 
     bullets.push(cur_bul);
 }
@@ -114,6 +132,7 @@ const move_right = ['ArrowRight','d']; // 'd' and right arrow
 const move_up = ['ArrowUp','w']; // 'w' and up arrow
 const move_down = ['ArrowDown','s']; //'s' and down arrow
 const shoot_buttons = ["x","X",]; // 'x' key to shoot bullets
+const frame_rate = 45;
 
 var moving = [false,false,false,false]; // index 0: left ,1:right , 2:up, 3:down
 
@@ -128,6 +147,7 @@ var bullets = []
 
 window.addEventListener("keydown",key_pressed);
 window.addEventListener("keyup",key_up);
+window.setInterval(maintain_physics, 1000/frame_rate);
 canvas.onmousedown = shoot_bullet;
 // window.addEventListener("beforeunload", function (){
 //     console.log("YAS");
@@ -139,10 +159,11 @@ function shoot_bullet(event){
     let x = event.pageX - $('#main_canvas_object').offset().left;
     let y = event.pageY - $('#main_canvas_object').offset().top;
     let cur_bul = new bullet(main_ch.x,main_ch.y, x, y, my_id);
+    let date_object = new Date();
 
     bullets.push(cur_bul);
 
-    socket.emit('json', {"b": {"x":main_ch.x, "y":main_ch.y, "ox": x, "oy":y, "id":my_id}});
+    socket.emit('json', {"b": {"x":main_ch.x, "y":main_ch.y, "ox": x, "oy":y, "id":my_id,"t":date_object.getTime()}});
 }
 function modify(cur_key, what_to=true){
 
@@ -174,8 +195,34 @@ function key_up(event){
 }
 
 
+function update_main_ch(){
 
+    let cur_ch = main_ch;
+    //check if you are moving
+    let original = cur_ch.move(moving);
+    let move_here = original[0];
+    let newx = original[1]; 
+    let newy = original[2];
 
+    if (move_here){
+        // you have moved
+        socket.emit("json", {"p":{id:cur_ch.identification, x:newx, y:newy}});
+    }
+
+    main_ch.x = newx;
+    main_ch.y = newy;
+}
+
+function update_bullets(){
+    for (bul of bullets){
+        bul.move();
+    }
+}
+
+function maintain_physics(){
+    update_main_ch();
+    update_bullets();
+}
 
 function animate(){
     //animate
@@ -189,25 +236,10 @@ function animate(){
 
         cur_ch.draw();
 
-        if (cur_ch.identification === my_id){
-            //check if you are moving
-            let original = cur_ch.move(moving);
-            let move_here = original[0];
-            let newx = original[1]; 
-            let newy = original[2];
 
-            if (move_here){
-                // you have moved
-                socket.emit("json", {"p":{id:cur_ch.identification, x:newx, y:newy}});
-            }
-
-            main_ch.x = newx;
-            main_ch.y = newy;
-        }
     }
 
     for (bul of bullets){
-        bul.move();
         bul.draw();
 
     }

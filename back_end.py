@@ -1,13 +1,16 @@
 
-
+import time
 from flask import Flask, render_template
 from flask_socketio import SocketIO, send
 from character_class import character
 
-global constant_vy,constant_vx,constant_radius
-constant_vy = 5
-constant_vx = 5
+#GLOBAL CONSTANTS:
+global constant_vy,constant_vx,constant_radius,constant_frame_rate
+constant_vy = 8
+constant_vx = 8
 constant_radius = 5
+constant_frame_rate = 45
+
 
 potential_coordinates = [
     [0,0],
@@ -29,19 +32,28 @@ def home():
 
 socketio = SocketIO(app, cors_allowed_origins="*")
 
+def current_milli_time():
+    return (time.time, time.time() * 1000,round(time.time() * 1000))
+
 def broadcast_player_position(json_thing):
     global players
-    print(json_thing)
+    # print(current_milli_time())
+
+
     #json_thing is in the following format: {'id': 0, 'x': 155, 'y': 145}
     socketio.emit(other_names["update"], json_thing, broadcast=True) #Broadcasting update
 
     #updating player stats accordingly:
     players[json_thing["id"]].x = json_thing["x"]
     players[json_thing["id"]].y = json_thing["y"]
+    
 
 
 def broadcast_new_bullet(bullet_json):
+    print(current_milli_time)
+    time.sleep(1)
     print(bullet_json)
+    print()
     socketio.emit("b", bullet_json, broadcast=True) #Broadcasting new bullet
 
 @socketio.on("json")
@@ -88,4 +100,5 @@ def update_player(id,newx,newy):
     player.x = newx
     player.y = newy
 if __name__ == "__main__":
+    print("server online")
     socketio.run(app)
