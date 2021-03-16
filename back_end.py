@@ -31,6 +31,7 @@ socketio = SocketIO(app, cors_allowed_origins="*")
 
 def broadcast_player_position(json_thing):
     global players
+    print(json_thing)
     #json_thing is in the following format: {'id': 0, 'x': 155, 'y': 145}
     socketio.emit(other_names["update"], json_thing, broadcast=True) #Broadcasting update
 
