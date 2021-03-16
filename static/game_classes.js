@@ -2,7 +2,7 @@
 var canvas = document.querySelector("canvas"); //selecting the canvas from the html
 var c = canvas.getContext("2d");
 //Making canvas full screen:
-
+console.log("EXECUTE THEM!");
 
 
 
@@ -86,6 +86,19 @@ function cartesian_to_polar(x,y,array_new_origin = [0,0]){
     
     return [r,theta];
 }
+
+function is_colliding(x,y,r,xx,yy,rr){
+
+    let distance = Math.sqrt((xx-x)**2 + (yy-y)**2); //calculating the distance between the points
+    let limit_dist = rr+r;
+
+    if (distance<=limit_dist){
+        return false
+    }
+    
+    return true;
+
+}
 class bullet{
     constructor(x,y,target_x,target_y, player_id, velocity = 8, radius = 3, color="black"){
         this.x = x;
@@ -120,14 +133,3 @@ class bullet{
         c.fill();
 
     }}
-
-    is_colliding(x,y,r);{
-        let distance = Math.sqrt((this.x-x)**2 + (this.y-y)**2);
-        let limit_dist = this.radius+r;
-
-        if (distance<=limit_dist){
-            return false;
-        }
-        return true;
-        
-    }

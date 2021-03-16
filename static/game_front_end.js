@@ -1,11 +1,32 @@
 
 
+// import character from "game_classes"
+// import bullet from "./game_classes"
+
 //THE 'character' and 'bullet' CLASSES ARE IMPORTED FROM 'game_classes.js' IN THE HTML FILE
 var my_id;
 var main_ch;
 //io.connect("http://127.0.0.1:5000/") -> used to be arguement for io();
 var socket = io();
 
+//CONTROLS AND ALTERNATIVES
+const move_left = ['ArrowLeft','a']; // the 'a' and left arrow
+const move_right = ['ArrowRight','d']; // 'd' and right arrow
+const move_up = ['ArrowUp','w']; // 'w' and up arrow
+const move_down = ['ArrowDown','s']; //'s' and down arrow
+const shoot_buttons = ["x","X",]; // 'x' key to shoot bullets
+const frame_rate = 45;
+
+var moving = [false,false,false,false]; // index 0: left ,1:right , 2:up, 3:down
+
+window.innerWidth = 1920/4;
+window.innerHeight = 1080/4;
+
+canvas.width = window.innerWidth;
+canvas.height = window.innerHeight;
+
+var other_players = []
+var bullets = []
 
 $(document).ready(function(){
 
@@ -26,7 +47,7 @@ $(document).ready(function(){
     })
     
     socket.on("b", function(something){
-        console.log(something);
+
         add_bullet(something);
     })
     
@@ -76,12 +97,12 @@ function add_bullet(bullet_object){
     cycles = Math.floor(cycles); //round to lower integer.
     let cur_bul = new bullet(c_x,c_y, ox, oy,id);
 
-    console.log(date_object.getTime(), req_time, cycles);
+    // console.log(date_object.getTime(), req_time, cycles);
     for (let i=0; i<cycles; i++){
         cur_bul.move();
     }
-    console.log(cur_bul);
 
+    
 
     bullets.push(cur_bul);
 }
@@ -142,24 +163,7 @@ function init_char(msg){
     
     
 }
-//CONTROLS AND ALTERNATIVES
-const move_left = ['ArrowLeft','a']; // the 'a' and left arrow
-const move_right = ['ArrowRight','d']; // 'd' and right arrow
-const move_up = ['ArrowUp','w']; // 'w' and up arrow
-const move_down = ['ArrowDown','s']; //'s' and down arrow
-const shoot_buttons = ["x","X",]; // 'x' key to shoot bullets
-const frame_rate = 45;
 
-var moving = [false,false,false,false]; // index 0: left ,1:right , 2:up, 3:down
-
-window.innerWidth = 1920/4;
-window.innerHeight = 1080/4;
-
-canvas.width = window.innerWidth;
-canvas.height = window.innerHeight;
-
-var other_players = []
-var bullets = []
 
 window.addEventListener("keydown",key_pressed);
 window.addEventListener("keyup",key_up);
@@ -230,16 +234,22 @@ function update_main_ch(){
 }
 
 function update_bullets(){
-    for (bul of bullets){
+    
+    for (let i=0; i<bullets.length; i++){
+        let bul = bullets[i];
         bul.move();
+        if (bul.x<0-bul.r || bul.x>window.innerWidth+bul.r || bul.y<0-bul.r || bul.y>window.innerHeight+bul.r){
+            bullets.splice(i,1);
+            console.log("bullet has dissapeared hihi")
+        }
     }
 }
 
 function check_player_death(){
     for (bul of bullets){
-        if (bul.is_colliding(main_ch.x,main_ch.y,main_ch.r)){
+        if (is_colliding(main_ch.x,main_ch.y,main_ch.r)){
             socket.emit("json", {"d":{id:cur_ch.identification}});
-            console.log("this is happening");
+            ;
 
         }
     }
@@ -247,6 +257,7 @@ function check_player_death(){
 function maintain_physics(){
     update_main_ch();
     update_bullets();
+    check_player_death();
 }
 
 function animate(){

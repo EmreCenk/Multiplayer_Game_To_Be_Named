@@ -1,17 +1,17 @@
 
 import time
 import threading
-from flask import Flask, render_template
+from flask import Flask, render_template, redirect
 from flask_socketio import SocketIO, send
 from game_classes_server import character
 
 #GLOBAL CONSTANTS:
-global constant_vy,constant_vx,constant_radius,constant_frame_rate
+global constant_vy,constant_vx,constant_radius,constant_frame_rate,totaljoined
 constant_vy = 8
 constant_vx = 8
 constant_radius = 5
 constant_frame_rate = 45
-
+totaljoined = 0
 
 potential_coordinates = [
     [0,0],
@@ -19,17 +19,22 @@ potential_coordinates = [
     [0,1080/2],
     [1920/2,1080/2]
 ]
-players=[]
+players={}
 app = Flask(__name__)
 app.config["SECRET_KEY"] = "I will eventually set a secret key"
 
 other_names = {"update":"n"}
 
 # def tick_game():
+    
+@app.route("/death")
+def dead():
+    return render_template("death.html")
 
 @app.route("/")
 def home():
     return render_template("index.html")
+
 
 
 socketio = SocketIO(app, cors_allowed_origins="*")
@@ -46,15 +51,20 @@ def broadcast_player_position(json_thing):
     socketio.emit(other_names["update"], json_thing, broadcast=True) #Broadcasting update
 
     #updating player stats accordingly:
+    print(players)
     players[json_thing["id"]].x = json_thing["x"]
     players[json_thing["id"]].y = json_thing["y"]
     
 def disconnect_player(object_sent):
     player_id = object_sent["id"]
-    players.pop(player_id)
-
+    
+    for i in players:
+        if players[i].id == player_id:
+            players.pop(i)
+            break
     socketio.emit("d", object_sent, broadcast = True)
 
+    redirect("/death")
 
 
 def broadcast_new_bullet(bullet_json):
@@ -78,13 +88,13 @@ def broadcast_update(json_thing):
 @socketio.on("message")
 def initialize(stats):
     #initialize player
-    global players    
+    global players  ,totaljoined  
+    new_id = int(totaljoined)
+    totaljoined+=1
     cur_cor = potential_coordinates[0] #get one of the corners
-    players.append(character(cur_cor[0],cur_cor[1],constant_radius,len(players)))
+    players[new_id] = character(cur_cor[0],cur_cor[1],constant_radius,len(players))
 
-    print(players,len(players))
-
-    tosend={"id":len(players)-1,"my_id":len(players)-1,"x":cur_cor[0], "y": cur_cor[1], "r":constant_radius, "vx": constant_vx, "vy":constant_vy}
+    tosend={"id":new_id,"my_id":new_id,"x":cur_cor[0], "y": cur_cor[1], "r":constant_radius, "vx": constant_vx, "vy":constant_vy}
     
     ptosend = json_to_players()
     ptosend[tosend["id"]] = tosend
@@ -100,14 +110,15 @@ def initialize(stats):
 def json_to_players():
     final={}
     for p in players:
-        if p.id!=len(players)-1:
-            final[p.id] = {"id":p.id,"x":p.x, "y": p.y, "r":p.radius, "vx": constant_vx, "vy":constant_vy}
+        up = players[p]
+        if up.id!=totaljoined-1:
+            final[up.id] = {"id":up.id,"x":up.x, "y": up.y, "r":up.radius, "vx": constant_vx, "vy":constant_vy}
 
     return final    
-def update_player(id,newx,newy):
-    player = players[id]
-    player.x = newx
-    player.y = newy
+# def update_player(id,newx,newy):
+#     player = players[id]
+#     player.x = newx
+#     player.y = newy
 if __name__ == "__main__":
     print("server online")
     socketio.run(app)
