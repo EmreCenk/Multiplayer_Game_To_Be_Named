@@ -2,6 +2,7 @@
 
 //THE 'character' and 'bullet' CLASSES ARE IMPORTED FROM 'game_classes.js' IN THE HTML FILE
 var my_id;
+var main_ch;
 var socket = io.connect("http://127.0.0.1:5000/");
 
 // ESTABLISHING SOCKET CONNECTION:
@@ -74,6 +75,14 @@ function init_char(msg){
         person = msg[person];
         if (person.hasOwnProperty('my_id')){
             my_id = person["my_id"];
+
+            let c_x = person["x"];
+            let c_y = person["y"];
+            let c_r = person["r"];
+            let vx = person["vx"];
+            let vy = person["vy"];
+            let cur_id = person["id"];
+            main_ch = new character(c_x,c_y,c_r,vx,vy,cur_id)
             console.log("id is finally here!", my_id);
 
         }
@@ -101,11 +110,11 @@ canvas.width = window.innerWidth;
 canvas.height = window.innerHeight;
 
 var other_players = []
-
+var bullets = []
 
 window.addEventListener("keydown",key_pressed);
 window.addEventListener("keyup",key_up);
-canvas.onclick = shoot_bullet;
+canvas.onmousedown = shoot_bullet;
 // window.addEventListener("beforeunload", function (){
 //     console.log("YAS");
 
@@ -113,9 +122,11 @@ canvas.onclick = shoot_bullet;
 //     )})
 
 function shoot_bullet(event){
-    var x = event.pageX - $('#main_canvas_object').offset().left;
-    var y = event.pageY - $('#main_canvas_object').offset().top;
-    console.log(x,y)
+    let x = event.pageX - $('#main_canvas_object').offset().left;
+    let y = event.pageY - $('#main_canvas_object').offset().top;
+    let cur_bul = new bullet(main_ch.x,main_ch.y,x,y,my_id);
+    // console.log(x,y,cur_bul);
+    bullets.push(cur_bul);
 }
 function modify(cur_key, what_to=true){
 
@@ -173,7 +184,16 @@ function animate(){
                 // you have moved
                 socket.emit("json", {id:cur_ch.identification, x:newx, y:newy});
             }
+
+            main_ch.x = newx;
+            main_ch.y = newy;
         }
+    }
+
+    for (bul of bullets){
+        bul.move();
+        bul.draw();
+
     }
     //animate other characters:
 }

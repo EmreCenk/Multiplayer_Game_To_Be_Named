@@ -59,7 +59,7 @@ class character{
 
 function polar_to_cartesian(r,theta,array_new_origin = [0,0]){
     // automatically converts theta into radians, the input should be in regular degrees.
-    theta = 0.0174533*theta;    //converting to radians:
+    // theta = 0.0174533*theta;    //converting to radians:
 
     x = r*Math.cos(theta)+array_new_origin[0];
     y = r*Math.sin(theta)+array_new_origin[1];
@@ -73,30 +73,40 @@ function cartesian_to_polar(x,y,array_new_origin = [0,0]){
 
     // Returns r, theta. Theta is in radians.
     w = (x - array_new_origin[0]);
-    h = (y - array_new_origin[0]);
+    h = (y - array_new_origin[1]);
 
     r = Math.sqrt(
         (w**2)+(h**2)
     );
-    theta = Math.atan2(h,w);
+    theta = Math.atan(h/w);
 
+    if (x<array_new_origin[0]){
+        theta+=Math.PI;
+    }
+    
     return [r,theta];
 }
 class bullet{
-    constructor(x,y,target_x,target_y, velocity = 8, radius = 3, color="black"){
+    constructor(x,y,target_x,target_y, player_id, velocity = 8, radius = 3, color="black"){
         this.x = x;
         this.y = y;
+
+        this.origx=x;
+        this.origy=y;
+        
         let polar_coordinates = cartesian_to_polar(target_x,target_y,[x,y]);
-        this.angle = polar_coordinates[0];
+        this.angle = polar_coordinates[1];
+        
+        console.log("ANGLE: " + this.angle*57.2957795);
         this.dist_origin = 0;
         this.velocity = velocity;
         this.radius = radius;
-
+        this.player_id = player_id;
     }
 
     move(){
         this.dist_origin += this.velocity;
-        let new_coordinates = polar_to_cartesian(this.dist_origin, this.angle)
+        let new_coordinates = polar_to_cartesian(this.dist_origin, this.angle, [this.origx,this.origy])
 
         this.x = new_coordinates[0];
         this.y = new_coordinates[1];
