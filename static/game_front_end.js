@@ -20,11 +20,17 @@ $(document).ready(function(){
 
     socket.on("n", function(something){ //also known as on("update")
         update_player(something);
-    });
+    })
+    
+    socket.on("b", function(something){
+        console.log(something);
+        add_bullet(something);
+    })
+    
+    ;
 
     socket.on("new player", function(something){
         //a new  p
-        console.log(something,"new player");
         if (something["id"]!==my_id){ //to make sure you don't add yourself twice
             add_player(something);
         }
@@ -33,7 +39,16 @@ $(document).ready(function(){
 
 })
 
+function add_bullet(bullet_object){
+    let c_x = bullet_object["x"];
+    let c_y = bullet_object["y"];
+    let ox = bullet_object["ox"]; //origin x
+    let oy = bullet_object["oy"]; //origin y
+    let id = bullet_object["id"]; 
+    let cur_bul = new bullet(c_x,c_y, ox, oy,id);
 
+    bullets.push(cur_bul);
+}
 function add_player(info){
 
     
@@ -45,7 +60,6 @@ function add_player(info){
     let cur_id = info["id"];
     let some_ch = new character(c_x,c_y,c_r,vx,vy,cur_id);
     other_players.push(some_ch);
-    console.log("Player added: " , other_players ,other_players.length);
 
 }
 
@@ -70,7 +84,7 @@ function update_player(json_input){
 
 }
 function init_char(msg){
-    console.log(msg, typeof(msg));
+
     for (var person in msg){
         person = msg[person];
         if (person.hasOwnProperty('my_id')){
@@ -83,7 +97,6 @@ function init_char(msg){
             let vy = person["vy"];
             let cur_id = person["id"];
             main_ch = new character(c_x,c_y,c_r,vx,vy,cur_id)
-            console.log("id is finally here!", my_id);
 
         }
         add_player(person);
@@ -92,7 +105,6 @@ function init_char(msg){
     }
     
     
-    console.log("character init ");
 }
 //CONTROLS AND ALTERNATIVES
 const move_left = ['ArrowLeft','a']; // the 'a' and left arrow
@@ -124,9 +136,11 @@ canvas.onmousedown = shoot_bullet;
 function shoot_bullet(event){
     let x = event.pageX - $('#main_canvas_object').offset().left;
     let y = event.pageY - $('#main_canvas_object').offset().top;
-    let cur_bul = new bullet(main_ch.x,main_ch.y,x,y,my_id);
-    // console.log(x,y,cur_bul);
+    let cur_bul = new bullet(main_ch.x,main_ch.y, x, y, my_id);
+
     bullets.push(cur_bul);
+
+    socket.emit('json', {"b": {"x":main_ch.x, "y":main_ch.y, "ox": x, "oy":y, "id":my_id}});
 }
 function modify(cur_key, what_to=true){
 
@@ -182,7 +196,7 @@ function animate(){
 
             if (move_here){
                 // you have moved
-                socket.emit("json", {id:cur_ch.identification, x:newx, y:newy});
+                socket.emit("json", {"p":{id:cur_ch.identification, x:newx, y:newy}});
             }
 
             main_ch.x = newx;

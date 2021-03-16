@@ -29,8 +29,7 @@ def home():
 
 socketio = SocketIO(app, cors_allowed_origins="*")
 
-@socketio.on("json")
-def broadcast_update(json_thing):
+def broadcast_player_position(json_thing):
     global players
     #json_thing is in the following format: {'id': 0, 'x': 155, 'y': 145}
     socketio.emit(other_names["update"], json_thing, broadcast=True) #Broadcasting update
@@ -38,6 +37,20 @@ def broadcast_update(json_thing):
     #updating player stats accordingly:
     players[json_thing["id"]].x = json_thing["x"]
     players[json_thing["id"]].y = json_thing["y"]
+
+
+def broadcast_new_bullet(bullet_json):
+    print(bullet_json)
+    socketio.emit("b", bullet_json, broadcast=True) #Broadcasting new bullet
+
+@socketio.on("json")
+def broadcast_update(json_thing):
+    if "p" in json_thing:
+        broadcast_player_position(json_thing["p"])
+    
+    elif "b" in json_thing:
+        broadcast_new_bullet(json_thing["b"])
+
      
 
 @socketio.on("message")
