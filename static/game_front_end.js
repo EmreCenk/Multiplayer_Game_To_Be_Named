@@ -7,8 +7,9 @@ var main_ch;
 var socket = io();
 
 
-// ESTABLISHING SOCKET CONNECTION:
 $(document).ready(function(){
+
+    // ESTABLISHING SOCKET CONNECTION:
     socket.on("connect",function(){
         socket.emit("message", {});
         
@@ -37,9 +38,24 @@ $(document).ready(function(){
             add_player(something);
         }
     });
-
+    
+    socket.on("d", function(something){
+        disconnect_player(something);
+    })
 
 })
+
+function disconnect_player(player_object){
+    let id = player_object["id"];
+
+    for (let i=0; i<other_players.length; i++){
+        if (id === other_players[i].id){
+            other_players.splice(i,1);//player has been popped from the array
+            return null;
+        }
+    }
+
+}
 
 function add_bullet(bullet_object){
     let id = bullet_object["id"]; 
@@ -61,7 +77,7 @@ function add_bullet(bullet_object){
     let cur_bul = new bullet(c_x,c_y, ox, oy,id);
 
     console.log(date_object.getTime(), req_time, cycles);
-    for (i=0; i<cycles; i++){
+    for (let i=0; i<cycles; i++){
         cur_bul.move();
     }
     console.log(cur_bul);
@@ -219,6 +235,15 @@ function update_bullets(){
     }
 }
 
+function check_player_death(){
+    for (bul of bullets){
+        if (bul.is_colliding(main_ch.x,main_ch.y,main_ch.r)){
+            socket.emit("json", {"d":{id:cur_ch.identification}});
+            console.log("this is happening");
+
+        }
+    }
+}
 function maintain_physics(){
     update_main_ch();
     update_bullets();

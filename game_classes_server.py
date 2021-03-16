@@ -1,4 +1,5 @@
 
+from math import cos,sin,radians,degrees,sqrt,atan2
 
 class character:
 
@@ -9,7 +10,6 @@ class character:
         self.id=identification
         
 
-from math import cos,sin,radians,degrees,sqrt,atan2
 def polar_to_cartesian(r,theta,tuple_new_origin=(0,0)):
     """Converts height given polar coordinate r,theta into height coordinate on the cartesian plane (x,y). We use polar
     coordinates to make the rotation mechanics easier. This function also converts theta into radians."""
@@ -23,7 +23,7 @@ def polar_to_cartesian(r,theta,tuple_new_origin=(0,0)):
     return (x,y)
 
 def cartesian_to_polar(x,y,tuple_new_origin=(0,0)):
-    """Is the inverse function of 'cartesian'. Converts height given cartesian coordinate; x,y into height polar coordinate in
+    """Is the inverse function of 'cartesian'. Converts height given cartesian coordinate; x,y into polar coordinate in
     the form (r, theta). """
 
     w=(x-tuple_new_origin[0]) #width of mini triangle

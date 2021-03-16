@@ -1,8 +1,9 @@
 
 import time
+import threading
 from flask import Flask, render_template
 from flask_socketio import SocketIO, send
-from character_class import character
+from game_classes_server import character
 
 #GLOBAL CONSTANTS:
 global constant_vy,constant_vx,constant_radius,constant_frame_rate
@@ -24,6 +25,7 @@ app.config["SECRET_KEY"] = "I will eventually set a secret key"
 
 other_names = {"update":"n"}
 
+# def tick_game():
 
 @app.route("/")
 def home():
@@ -47,12 +49,18 @@ def broadcast_player_position(json_thing):
     players[json_thing["id"]].x = json_thing["x"]
     players[json_thing["id"]].y = json_thing["y"]
     
+def disconnect_player(object_sent):
+    player_id = object_sent["id"]
+    players.pop(player_id)
+
+    socketio.emit("d", object_sent, broadcast = True)
+
 
 
 def broadcast_new_bullet(bullet_json):
     print(current_milli_time())
-    time.sleep(1)
-    print(bullet_json())
+
+    print(bullet_json)
     print()
     socketio.emit("b", bullet_json, broadcast=True) #Broadcasting new bullet
 
@@ -64,7 +72,8 @@ def broadcast_update(json_thing):
     elif "b" in json_thing:
         broadcast_new_bullet(json_thing["b"])
 
-     
+    elif "d" in json_thing:
+        disconnect_player(json_thing["d"])
 
 @socketio.on("message")
 def initialize(stats):

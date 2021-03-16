@@ -120,3 +120,14 @@ class bullet{
         c.fill();
 
     }}
+
+    is_colliding(x,y,r);{
+        let distance = Math.sqrt((this.x-x)**2 + (this.y-y)**2);
+        let limit_dist = this.radius+r;
+
+        if (distance<=limit_dist){
+            return false;
+        }
+        return true;
+        
+    }
