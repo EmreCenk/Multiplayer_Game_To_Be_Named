@@ -6,6 +6,7 @@ var main_ch;
 //"http://127.0.0.1:5000/" -> used to be arguement for io();
 var socket = io.connect();
 
+
 // ESTABLISHING SOCKET CONNECTION:
 $(document).ready(function(){
     socket.on("connect",function(){
