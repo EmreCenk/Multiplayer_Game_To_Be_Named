@@ -238,7 +238,7 @@ function update_bullets(){
     for (let i=0; i<bullets.length; i++){
         let bul = bullets[i];
         bul.move();
-        if (bul.x<0-bul.r || bul.x>window.innerWidth+bul.r || bul.y<0-bul.r || bul.y>window.innerHeight+bul.r){
+        if (bul.x<0 || bul.x>window.innerWidth || bul.y<0 || bul.y>window.innerHeight){
             bullets.splice(i,1);
             console.log("bullet has dissapeared hihi")
         }
@@ -246,15 +246,32 @@ function update_bullets(){
 }
 
 function check_player_death(){
-    for (bul of bullets){
-        if (is_colliding(main_ch.x,main_ch.y,main_ch.r)){
+    for (let bul of bullets){
+        console.log(bul.player_id,my_id);
+        if (bul.player_id ===  my_id){
+            console.log("phew!");
+            continue;
+        }
+        if (is_colliding(main_ch.x,   main_ch.y,   main_ch.radius, bul.x,  bul.y, bul.radius )){
             socket.emit("json", {"d":{id:cur_ch.identification}});
-            ;
+            console.log("death emitted");
+
+            let oreq = new XMLHttpRequest();
+            oreq.open("GET", "/death");
+            oreq.send(null);
+            console.log("requested death");
+            window.cancelAnimationFrame(animate);
+            window.location.href = "/death"; // redirect yourself
+
+            alert("YOU HAVE DIED");
+
+            
 
         }
     }
 }
 function maintain_physics(){
+    console.log("maintaining physics");
     update_main_ch();
     update_bullets();
     check_player_death();

@@ -91,7 +91,9 @@ function is_colliding(x,y,r,xx,yy,rr){
 
     let distance = Math.sqrt((xx-x)**2 + (yy-y)**2); //calculating the distance between the points
     let limit_dist = rr+r;
-
+    
+    console.log(x,y,r,xx,yy,rr);
+    console.log(distance,limit_dist, "did we collide?")
     if (distance<=limit_dist){
         return false
     }
@@ -110,7 +112,7 @@ class bullet{
         let polar_coordinates = cartesian_to_polar(target_x,target_y,[x,y]);
         this.angle = polar_coordinates[1];
         
-        console.log("ANGLE: " + this.angle*57.2957795);
+        // console.log("ANGLE: " + this.angle*57.2957795);
         this.dist_origin = 0;
         this.velocity = velocity;
         this.radius = radius;
