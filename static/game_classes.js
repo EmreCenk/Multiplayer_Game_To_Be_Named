@@ -7,7 +7,7 @@ console.log("EXECUTE THEM!");
 
 
 class character{
-    constructor(x,y,radius, vx, vy, identification, color="black"){
+    constructor(x,y,radius, vx, vy, id, color="black"){
         this.x=x;
         this.y=y;
         this.radius = radius;
@@ -15,7 +15,7 @@ class character{
         this.vy = vy;
         this.color=color;
         this.show=true;
-        this.identification=identification;
+        this.id=id;
     }
 
     move(array_of_current_moves){
@@ -102,7 +102,7 @@ function is_colliding(x,y,r,xx,yy,rr){
 
 }
 class bullet{
-    constructor(x,y,target_x,target_y, player_id, velocity = 8, radius = 3, color="black"){
+    constructor(x,y,target_x,target_y, id, velocity = 8, radius = 3, color="black"){
         this.x = x;
         this.y = y;
 
@@ -116,7 +116,7 @@ class bullet{
         this.dist_origin = 0;
         this.velocity = velocity;
         this.radius = radius;
-        this.player_id = player_id;
+        this.id = id;
     }
 
     move(){

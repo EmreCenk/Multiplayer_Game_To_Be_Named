@@ -39,7 +39,6 @@ $(document).ready(function(){
 
     socket.on('message', function(msg) {
         init_char(msg);
-   
 	});
 
     socket.on("n", function(something){ //also known as on("update")
@@ -68,10 +67,11 @@ $(document).ready(function(){
 
 function disconnect_player(player_object){
     let id = player_object["id"];
-
+    console.log(id, "yoyoyoyo");
     for (let i=0; i<other_players.length; i++){
         if (id === other_players[i].id){
             other_players.splice(i,1);//player has been popped from the array
+            console.log("player popped", other_players.length);
             return null;
         }
     }
@@ -130,7 +130,7 @@ function update_player(json_input){
 
     for (var person in other_players){
         
-        if ( other_players[person].identification === curid){
+        if ( other_players[person].id === curid){
             other_players[person].x = new_x;
             other_players[person].y = new_y;
 
@@ -226,7 +226,7 @@ function update_main_ch(){
 
     if (move_here){
         // you have moved
-        socket.emit("json", {"p":{id:cur_ch.identification, x:newx, y:newy}});
+        socket.emit("json", {"p":{id:cur_ch.id, x:newx, y:newy}});
     }
 
     main_ch.x = newx;
@@ -247,21 +247,16 @@ function update_bullets(){
 
 function check_player_death(){
     for (let bul of bullets){
-        console.log(bul.player_id,my_id);
-        if (bul.player_id ===  my_id){
-            console.log("phew!");
+        
+        if (bul.id ===  my_id){
+
             continue;
         }
         if (is_colliding(main_ch.x,   main_ch.y,   main_ch.radius, bul.x,  bul.y, bul.radius )){
-            socket.emit("json", {"d":{id:cur_ch.identification}});
-            console.log("death emitted");
+            socket.emit("json", {"d":{id:cur_ch.id}});
 
-            let oreq = new XMLHttpRequest();
-            oreq.open("GET", "/death");
-            oreq.send(null);
-            console.log("requested death");
             window.cancelAnimationFrame(animate);
-            window.location.href = "/death"; // redirect yourself
+            // window.location.href = "/death"; // redirect yourself
 
             alert("YOU HAVE DIED");
 

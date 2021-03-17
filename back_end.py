@@ -1,6 +1,5 @@
 
 import time
-import threading
 from flask import Flask, render_template, redirect
 from flask_socketio import SocketIO, send
 from game_classes_server import character
@@ -61,9 +60,11 @@ def disconnect_player(object_sent):
         if players[i].id == player_id:
             players.pop(i)
             break
-    socketio.emit("d", object_sent, broadcast = True)
 
-    
+    socketio.emit("d", object_sent, broadcast = True)
+    print("popped and told everyone")
+
+
 
 
 def broadcast_new_bullet(bullet_json):
@@ -104,7 +105,7 @@ def initialize(stats):
     #tell everyone that a new player has joined:
     socketio.emit("new player", tosend, broadcast = True)
     
-
+    print("new player, has an id of : " , new_id)
 
 def json_to_players():
     final={}
