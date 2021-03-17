@@ -95,10 +95,10 @@ function is_colliding(x,y,r,xx,yy,rr){
     console.log(x,y,r,xx,yy,rr);
     console.log(distance,limit_dist, "did we collide?")
     if (distance<=limit_dist){
-        return false
+        return true
     }
     
-    return true;
+    return false;
 
 }
 class bullet{

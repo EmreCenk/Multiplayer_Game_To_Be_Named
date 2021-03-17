@@ -253,7 +253,7 @@ function check_player_death(){
             continue;
         }
         if (is_colliding(main_ch.x,   main_ch.y,   main_ch.radius, bul.x,  bul.y, bul.radius )){
-            socket.emit("json", {"d":{id:cur_ch.id}});
+            socket.emit("json", {"d":{id:my_id}}); //tell everyone that you have died.
 
             window.cancelAnimationFrame(animate);
             // window.location.href = "/death"; // redirect yourself
