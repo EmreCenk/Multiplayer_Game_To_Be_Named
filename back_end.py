@@ -122,4 +122,4 @@ def json_to_players():
 #     player.y = newy
 if __name__ == "__main__":
     print("server online")
-    socketio.run(app)
+    app.run()
