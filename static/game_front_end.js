@@ -256,7 +256,7 @@ function check_player_death(){
             socket.emit("json", {"d":{id:my_id}}); //tell everyone that you have died.
 
             window.cancelAnimationFrame(animate);
-            // window.location.href = "/death"; // redirect yourself
+            window.location.href = "/death"; // redirect yourself
 
             alert("YOU HAVE DIED");
 

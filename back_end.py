@@ -50,8 +50,8 @@ def broadcast_player_position(json_thing):
     socketio.emit(other_names["update"], json_thing, broadcast=True) #Broadcasting update
 
     #updating player stats accordingly:
-    # players[json_thing["id"]].x = json_thing["x"]
-    # players[json_thing["id"]].y = json_thing["y"]
+    players[json_thing["id"]].x = json_thing["x"]
+    players[json_thing["id"]].y = json_thing["y"]
     
 def disconnect_player(object_sent):
     player_id = object_sent["id"]
@@ -59,10 +59,11 @@ def disconnect_player(object_sent):
     for i in players:
         if players[i].id == player_id:
             players.pop(i)
+            print("popped")
+
             break
 
     socketio.emit("d", object_sent, broadcast = True)
-    print("popped and told everyone")
 
 
 
