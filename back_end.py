@@ -26,11 +26,12 @@ other_names = {"update":"n"}
 
 # def tick_game():
     
-@app.route("/death")
+@app.route("/")
 def dead():
     return render_template("death.html")
 
-@app.route("/")
+
+@app.route("/play")
 def home():
     return render_template("index.html")
 
@@ -69,10 +70,7 @@ def disconnect_player(object_sent):
 
 
 def broadcast_new_bullet(bullet_json):
-    print(current_milli_time())
 
-    print(bullet_json)
-    print()
     socketio.emit("b", bullet_json, broadcast=True) #Broadcasting new bullet
 
 @socketio.on("json")
@@ -122,4 +120,6 @@ def json_to_players():
 #     player.y = newy
 if __name__ == "__main__":
     print("server online")
-    app.run()
+    socketio.run(app)
+    #app.run()
+

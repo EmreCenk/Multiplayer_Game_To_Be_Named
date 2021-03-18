@@ -67,7 +67,13 @@ $(document).ready(function(){
 
 function disconnect_player(player_object){
     let id = player_object["id"];
-    console.log(id, "yoyoyoyo");
+
+    if (id===my_id){
+        other_players = [];
+        window.location.href = "/"; // redirect yourself
+
+        // alert("YOU HAVE DIED");
+    }
     for (let i=0; i<other_players.length; i++){
         if (id === other_players[i].id){
             other_players.splice(i,1);//player has been popped from the array
@@ -142,6 +148,9 @@ function update_player(json_input){
 }
 function init_char(msg){
 
+
+    console.log("before plays ", other_players);
+
     for (var person in msg){
         person = msg[person];
         if (person.hasOwnProperty('my_id')){
@@ -169,11 +178,9 @@ window.addEventListener("keydown",key_pressed);
 window.addEventListener("keyup",key_up);
 window.setInterval(maintain_physics, 1000/frame_rate);
 canvas.onmousedown = shoot_bullet;
-// window.addEventListener("beforeunload", function (){
-//     console.log("YAS");
-
-//     socket.emit('message', {username:my_id}
-//     )})
+window.onbeforeunload = function () {
+    socket.emit("json", {"d":{id:my_id}}); //tell everyone that you have died.;
+}
 
 function shoot_bullet(event){
     let x = event.pageX - $('#main_canvas_object').offset().left;
@@ -256,9 +263,7 @@ function check_player_death(){
             socket.emit("json", {"d":{id:my_id}}); //tell everyone that you have died.
 
             window.cancelAnimationFrame(animate);
-            window.location.href = "/death"; // redirect yourself
 
-            alert("YOU HAVE DIED");
 
             
 

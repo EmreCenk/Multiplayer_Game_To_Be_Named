@@ -10,10 +10,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
     <!-- <link rel="stylesheet" href="style.css"> -->
-    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}" />
+    <!-- <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}" /> -->
     <!-- <link type = "stylesheet" href = "style.css"> -->
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-    <script src="https://cdn.socket.io/3.1.1/socket.io.min.js" integrity="sha384-gDaozqUvc4HTgo8iZjwth73C6dDDeOJsAgpxBcMpZYztUfjHXpzrpdrHRdVp8ySO" crossorigin="anonymous"></script>
+    <!-- <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script> -->
+    <!-- <script src="https://cdn.socket.io/3.1.1/socket.io.min.js" integrity="sha384-gDaozqUvc4HTgo8iZjwth73C6dDDeOJsAgpxBcMpZYztUfjHXpzrpdrHRdVp8ySO" crossorigin="anonymous"></script> -->
 
 
 </head>
@@ -21,8 +21,12 @@
     <div>
         <h1 style = "text-align:center;">Game over.</h1>
     </div>
-    <script src = "/static/game_classes.js" ></script>
-    <script type = "text/javascript" src="{{url_for('static', filename='game_front_end.js')}}"></script>
+
+    <div id = "play_again">
+        <button onclick="window.location.href = 'play'"></button>
+    </div>
+    <!-- <script src = "/static/game_classes.js" ></script> -->
+    <!-- <script type = "text/javascript" src="{{url_for('static', filename='game_front_end.js')}}"></script> -->
     <!-- <script src="game_front_end.js"></script> -->
 
 </body>
